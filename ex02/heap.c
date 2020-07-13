@@ -22,6 +22,12 @@ void construct_1(int *, int); // use upheap
 void construct_2(int *, int); // use downheap
 void myheapsort(int *, int);  // stdlibにあるheapsortとの衝突を避けるためmyheapsortにrename
 
+/*時間計測関数の外部参照（以降の演習も以下３行はコピー＆ペーストする*/
+extern void start_timer(unsigned int *);
+extern unsigned get_elapsed_time(unsigned int *);
+extern unsigned int start_tm;
+/*いつもコピーする部分ここまで*/
+
 int main(int argc, char *argv[]) {
 
     int i, t;
@@ -32,7 +38,8 @@ int main(int argc, char *argv[]) {
       （実行時は、引数に 0 以下の値を与える)
   　　　nの値がヒープを構築するデータ数である。（配列の1～n番目を利用する）
     */
-    int n = 7, A[MAX_ELEMENTS] = {-1, 5, 2, 7, 13, 1, 6, 8};
+    // int n = 7, A[MAX_ELEMENTS] = {-1, 5, 2, 7, 13, 1, 6, 8};
+    int n = 15, A[MAX_ELEMENTS] = {-1, 13,9,2,15,8,7,5,2,3,6,1,0,10,9,4};
     /*
   　　　注意：ヒープ構造は、n番目と2n,2n+1番目の要素との順序関係が規定されたものであるため、
   　　　　　　Ｃ系の言語の「配列の添え字は０から始まる」ルールの通りにヒープの先頭の要素を０番目(n=0)とすると
@@ -128,15 +135,15 @@ int main(int argc, char *argv[]) {
 
         //ヒープ構築操作本体（関数呼び出し）はここ
         /* 時間計測するときはここから */
-        // start_timer(&start_tm);
+        start_timer(&start_tm);
 
         //construct_1(A, n); // upheapで構築
-        //construct_2(A, n); //downheapで構築
+        construct_2(A, n); //downheapで構築
         //myheapsort(A,n);         //ヒープソート
 
         /* ここまで時間計測 */
-        // printf("%5d : elapsed time is %10.3f milliseconds. \n", n,
-        // get_elapsed_time(&start_tm)*1.0e-3);
+        printf("%5d : elapsed time is %10.3f milliseconds. \n", n,
+          get_elapsed_time(&start_tm)*1.0e-3);
         //操作本体ここまで
 
         if(value > 0) {
