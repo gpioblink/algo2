@@ -10,9 +10,10 @@ id     : s1260250
 #include <stdlib.h>
 #include <time.h>
 #define RND 10
-#define BASE 2 // Strassenの性能を出すためには、この値の調整が重要
+#define BASE 256 // Strassenの性能を出すためには、この値の調整が重要
 
-//#define DEBUG
+// #define DEBUG
+#define NOREPORT
 
 void mat_gen(int **, int **, int **, int, int);
 
@@ -115,6 +116,7 @@ int main(int argc, char *argv[]) {
            get_elapsed_time(&start_tm) * 1.0e-6);
     #endif
 
+    #ifdef NOREPORT
     /* Numerical error check */
     for(i = 0; i < mat_size; i++) {
         for(j = 0; j < mat_size; j++) {
@@ -123,6 +125,7 @@ int main(int argc, char *argv[]) {
                 printf("Error at(%d,%d) : %d : ans: %d res: %d\n", i, j, err, C2[i][j], C[i][j]);
         }
     }
+    #endif
 
     for(i = 0; i < mat_size; i++) {
         free(A[i]);

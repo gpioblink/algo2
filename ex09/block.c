@@ -1,7 +1,7 @@
 /*
 
-author : your name
-id     : your id
+author : Kai Yamada
+id     : s1260250
 
 */
 #include <stdio.h>
@@ -79,4 +79,105 @@ void FindPlace(int **Board, int size, int h_x, int h_y) {
     Strassen と同様、コードの配置（処理の流れ）は以下のようになるはずである
     極小まで分解されたときの処理（再帰の打ち切り）⇒ 部分問題用の配列確保 ⇒ 再帰に持ち込むための準備の処理 ⇒ 再帰呼び出し
     */
+    int **P1, **P2, **P3, **P4;
+
+    if(size <= 1) {
+        return;
+    }
+
+    int mid = size / 2;
+
+    printf("Print_Start:\n"); //出力
+    for(int i = 0; i < mid; i++) {
+        for(int j = 0; j < mid; j++) {
+            printf("%2d", Board[i][j]);
+            if(j != mid - 1)
+                printf(" ");
+        }
+        printf("\n");
+    }
+
+    /* Allocate the memory for 2-D arrays  */
+    P1 = (int **)malloc(mid * sizeof(int *));
+    P2 = (int **)malloc(mid * sizeof(int *));
+    P3 = (int **)malloc(mid * sizeof(int *));
+    P4 = (int **)malloc(mid * sizeof(int *));
+
+    for(int i = 0; i < mid; i++) {
+        P1[i] = (int *)malloc(mid * sizeof(int));
+        P2[i] = (int *)malloc(mid * sizeof(int));
+        P3[i] = (int *)malloc(mid * sizeof(int));
+        P4[i] = (int *)malloc(mid * sizeof(int));
+    }
+
+    for(int i = 0; i < mid; i++) {
+        for(int j = 0; j < mid; j++) { 
+            P1[i][j] = Board[i][j];
+            P2[i][j] = Board[i][mid + j];
+            P3[i][j] = Board[mid + i][j];
+            P4[i][j] = Board[mid + i][mid + j];
+        }
+    }
+
+    if(h_x < mid && h_y < mid) {
+        // 左上にホール
+        P2[mid-1][0] = block_id;
+        P3[0][mid-1] = block_id;
+        P4[0][0] = block_id;
+        ++block_id;
+        FindPlace(P1, mid, h_x, h_y);
+        FindPlace(P2, mid, mid-1, 0);
+        FindPlace(P3, mid, 0, mid-1);
+        FindPlace(P4, mid, 0, 0);
+    } else if (h_x < mid && h_y >= mid) {
+        // 右上にホール
+        P1[mid-1][mid-1] = block_id;
+        P3[0][mid-1] = block_id;
+        P4[0][0] = block_id;
+        ++block_id;
+        FindPlace(P1, mid, mid-1, mid-1);
+        FindPlace(P2, mid, h_x, h_y-mid);
+        FindPlace(P3, mid, 0, mid-1);
+        FindPlace(P4, mid, 0, 0);
+    } else if (h_x >= mid && h_y < mid) {
+        // 左下にホール
+        P1[mid-1][mid-1] = block_id;
+        P2[mid-1][0] = block_id;
+        P4[0][0] = block_id;
+        ++block_id;
+        FindPlace(P1, mid, mid-1, mid-1);
+        FindPlace(P2, mid, mid-1, 0);
+        FindPlace(P3, mid, h_x-mid, h_y);
+        FindPlace(P4, mid, 0, 0);
+    } else {
+        P1[mid-1][mid-1] = block_id;
+        P2[mid-1][0] = block_id;
+        P3[0][mid-1] = block_id;
+        ++block_id;
+        // 右下にホール
+        FindPlace(P1, mid, mid-1, mid-1);
+        FindPlace(P2, mid, mid-1, 0);
+        FindPlace(P3, mid, 0, mid-1);
+        FindPlace(P4, mid, h_x-mid, h_y-mid);      
+    }
+
+    for(int i = 0; i < mid; i++) {
+        for(int j = 0; j < mid; j++) { 
+            Board[i][j] = P1[i][j];
+            Board[i][mid + j] = P2[i][j];
+            Board[mid + i][j] = P3[i][j];
+            Board[mid + i][mid + j] = P4[i][j];
+        }
+    }
+
+    printf("Print_Answer:\n"); //出力
+    for(int i = 0; i < mid; i++) {
+        for(int j = 0; j < mid; j++) {
+            printf("%2d", Board[i][j]);
+            if(j != mid - 1)
+                printf(" ");
+        }
+        printf("\n");
+    }
+
 }
