@@ -89,7 +89,14 @@ int main(int argc, char *argv[]) {
 
     /* O(n^3) matrix product  Function CALL*/
 
+    #ifdef DEBUG
+    start_timer(&start_tm);
+    #endif
     n3_product(A, B, C, mat_size);
+    #ifdef DEBUG
+    printf("Product  %dx%d     : elapsed time is %10.6f sec. \n", mat_size, mat_size,
+           get_elapsed_time(&start_tm) * 1.0e-6);
+    #endif
 
     /* Evacuate the result of n^3 matrix product*/
     for(i = 0; i < mat_size; i++) {
@@ -99,10 +106,14 @@ int main(int argc, char *argv[]) {
     }
 
     /* Strassen's algorithm  Function CALL*/
+    #ifndef DEBUG
     start_timer(&start_tm);
+    #endif
     strassen(A, B, C, mat_size);
+    #ifndef DEBUG
     printf("Strassen  %dx%d     : elapsed time is %10.6f sec. \n", mat_size, mat_size,
            get_elapsed_time(&start_tm) * 1.0e-6);
+    #endif
 
     /* Numerical error check */
     for(i = 0; i < mat_size; i++) {
@@ -139,25 +150,25 @@ void strassen(int **A, int **B, int **C, int size) {
     mid = size / 2; //行列の中央
 
     /* Allocate the memory for 2-D arrays  */
-    X = (int **)malloc(size * sizeof(int *));
-    Y = (int **)malloc(size * sizeof(int *));
-    P1 = (int **)malloc(size * sizeof(int *));
-    P2 = (int **)malloc(size * sizeof(int *));
-    P3 = (int **)malloc(size * sizeof(int *));
-    P4 = (int **)malloc(size * sizeof(int *));
-    P5 = (int **)malloc(size * sizeof(int *));
-    P6 = (int **)malloc(size * sizeof(int *));
-    P7 = (int **)malloc(size * sizeof(int *));
+    X = (int **)malloc(mid * sizeof(int *));
+    Y = (int **)malloc(mid * sizeof(int *));
+    P1 = (int **)malloc(mid * sizeof(int *));
+    P2 = (int **)malloc(mid * sizeof(int *));
+    P3 = (int **)malloc(mid * sizeof(int *));
+    P4 = (int **)malloc(mid * sizeof(int *));
+    P5 = (int **)malloc(mid * sizeof(int *));
+    P6 = (int **)malloc(mid * sizeof(int *));
+    P7 = (int **)malloc(mid * sizeof(int *));
     for(i = 0; i < mid; i++) {
-        X[i] = (int *)malloc(size * sizeof(int));
-        Y[i] = (int *)malloc(size * sizeof(int));
-        P1[i] = (int *)malloc(size * sizeof(int));
-        P2[i] = (int *)malloc(size * sizeof(int));
-        P3[i] = (int *)malloc(size * sizeof(int));
-        P4[i] = (int *)malloc(size * sizeof(int));
-        P5[i] = (int *)malloc(size * sizeof(int));
-        P6[i] = (int *)malloc(size * sizeof(int));
-        P7[i] = (int *)malloc(size * sizeof(int));
+        X[i] = (int *)malloc(mid * sizeof(int));
+        Y[i] = (int *)malloc(mid * sizeof(int));
+        P1[i] = (int *)malloc(mid * sizeof(int));
+        P2[i] = (int *)malloc(mid * sizeof(int));
+        P3[i] = (int *)malloc(mid * sizeof(int));
+        P4[i] = (int *)malloc(mid * sizeof(int));
+        P5[i] = (int *)malloc(mid * sizeof(int));
+        P6[i] = (int *)malloc(mid * sizeof(int));
+        P7[i] = (int *)malloc(mid * sizeof(int));
     }
 
     /* Compute P1  = (A12 - A22)(B21 + B22)*/
